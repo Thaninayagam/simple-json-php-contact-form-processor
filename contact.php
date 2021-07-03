@@ -93,21 +93,21 @@ function savecontactDetails($customerName,$customeremail,$customerContact,$custo
       die("Connection failed: " . $conn->connect_error);
     }
     
-    $sql = "INSERT INTO yourtable (c_name, c_email, c_contact,	c_message)
-    VALUES ('$customerName','$customeremail','$customerContact','$customerMessage')";
-    
-   // VALUES (`.$customerName.`,`.$customeremail.`,`.$customerContact.`,`.$customerMessage.`)";
-    
-    if ($conn->query($sql) === TRUE) {
+    $stmt = $conn->prepare("INSERT INTO contact_master (c_name, c_email, c_contact,	c_message) VALUES(?,?,?,?)");
+     $stmt->bind_param("ssss",$customerName,$customeremail,$customerContact,$customerMessage);
+
+   
+    if ($stmt->execute()=== TRUE) {
+        $stmt->close();
         $conn->close();
         return true;
       
     } else {
         
+        $stmt->close();
         $conn->close();
         return false;
-      
-    }
+     
     
     
 
